@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.courseregistration.dto.CourseForm;
 import com.example.courseregistration.service.CategoryService;
 import com.example.courseregistration.service.CourseService;
+import com.example.courseregistration.service.EnrollmentService;
 
 @Controller
 @RequestMapping("/admin/courses")
@@ -22,15 +23,23 @@ public class AdminCourseController {
 
     private final CourseService courseService;
     private final CategoryService categoryService;
+    private final EnrollmentService enrollmentService;
 
-    public AdminCourseController(CourseService courseService, CategoryService categoryService) {
+    public AdminCourseController(
+        CourseService courseService,
+        CategoryService categoryService,
+        EnrollmentService enrollmentService
+    ) {
         this.courseService = courseService;
         this.categoryService = categoryService;
+        this.enrollmentService = enrollmentService;
     }
 
     @GetMapping
     public String manageCourses(Model model) {
         model.addAttribute("courses", courseService.findAll());
+        model.addAttribute("registeredStudentCount", enrollmentService.countStudentsWithEnrollments());
+        model.addAttribute("courseEnrollmentCounts", enrollmentService.countEnrollmentsPerCourse());
         return "admin/course-list";
     }
 

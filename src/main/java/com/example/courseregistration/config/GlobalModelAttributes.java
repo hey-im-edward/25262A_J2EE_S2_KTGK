@@ -10,13 +10,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
+import com.example.courseregistration.service.AuthenticatedUserService;
+
 @ControllerAdvice
 public class GlobalModelAttributes {
 
     private static final Set<String> DEMO_GOOGLE_CLIENT_IDS = Set.of("", "demo-google-client-id");
 
+    private final AuthenticatedUserService authenticatedUserService;
+
     @Value("${app.google.client-id:}")
     private String googleClientId;
+
+    public GlobalModelAttributes(AuthenticatedUserService authenticatedUserService) {
+        this.authenticatedUserService = authenticatedUserService;
+    }
 
     @ModelAttribute
     public void addGlobalAttributes(Model model, Authentication authentication) {
@@ -27,9 +35,11 @@ public class GlobalModelAttributes {
         boolean admin = false;
         boolean student = false;
         String currentUserName = null;
+        String currentUserIdentifier = null;
 
         if (authenticated) {
-            currentUserName = authentication.getName();
+            currentUserName = authenticatedUserService.resolveCurrentUserDisplayName(authentication).orElse(null);
+            currentUserIdentifier = authenticatedUserService.resolveCurrentUserIdentifier(authentication).orElse(null);
             for (GrantedAuthority authority : authentication.getAuthorities()) {
                 if ("ROLE_ADMIN".equals(authority.getAuthority())) {
                     admin = true;
@@ -44,6 +54,7 @@ public class GlobalModelAttributes {
         model.addAttribute("isAdmin", admin);
         model.addAttribute("isStudent", student);
         model.addAttribute("currentUserName", currentUserName);
+        model.addAttribute("currentUserIdentifier", currentUserIdentifier);
         model.addAttribute("googleLoginReady", !DEMO_GOOGLE_CLIENT_IDS.contains(googleClientId));
     }
 }

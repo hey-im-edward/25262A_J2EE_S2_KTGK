@@ -56,6 +56,18 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
+    public List<String> suggestCourseNames(String keyword) {
+        if (!StringUtils.hasText(keyword)) {
+            return List.of();
+        }
+
+        return courseRepository.findTop6ByNameContainingIgnoreCaseOrderByNameAsc(keyword.trim()).stream()
+            .map(Course::getName)
+            .distinct()
+            .toList();
+    }
+
+    @Transactional(readOnly = true)
     public Course getRequiredCourse(Long id) {
         return courseRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy học phần"));

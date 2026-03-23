@@ -2,11 +2,15 @@ package com.example.courseregistration.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.example.courseregistration.dto.CourseEnrollmentStats;
 import com.example.courseregistration.entity.Course;
 import com.example.courseregistration.entity.Enrollment;
 import com.example.courseregistration.entity.Student;
@@ -62,5 +66,16 @@ public class EnrollmentService {
         } catch (IllegalArgumentException exception) {
             return false;
         }
+    }
+
+    @Transactional(readOnly = true)
+    public long countStudentsWithEnrollments() {
+        return enrollmentRepository.countDistinctStudentsWithEnrollments();
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, Long> countEnrollmentsPerCourse() {
+        return enrollmentRepository.countEnrollmentsByCourse().stream()
+            .collect(Collectors.toMap(CourseEnrollmentStats::courseId, CourseEnrollmentStats::enrollmentCount));
     }
 }

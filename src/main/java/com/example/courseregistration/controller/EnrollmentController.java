@@ -8,15 +8,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.courseregistration.service.AuthenticatedUserService;
 import com.example.courseregistration.service.EnrollmentService;
 
 @Controller
 public class EnrollmentController {
 
     private final EnrollmentService enrollmentService;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    public EnrollmentController(EnrollmentService enrollmentService) {
+    public EnrollmentController(
+        EnrollmentService enrollmentService,
+        AuthenticatedUserService authenticatedUserService
+    ) {
         this.enrollmentService = enrollmentService;
+        this.authenticatedUserService = authenticatedUserService;
     }
 
     @PostMapping("/enroll/course/{courseId}")
@@ -26,7 +32,7 @@ public class EnrollmentController {
         RedirectAttributes redirectAttributes
     ) {
         try {
-            enrollmentService.enrollCourse(authentication.getName(), courseId);
+            enrollmentService.enrollCourse(authenticatedUserService.getRequiredCurrentUserIdentifier(authentication), courseId);
             redirectAttributes.addFlashAttribute("successMessage", "Đăng ký học phần thành công.");
         } catch (IllegalArgumentException exception) {
             redirectAttributes.addFlashAttribute("errorMessage", exception.getMessage());
@@ -36,7 +42,10 @@ public class EnrollmentController {
 
     @GetMapping("/enroll/my-courses")
     public String myCourses(Authentication authentication, Model model) {
-        model.addAttribute("enrollments", enrollmentService.getStudentEnrollments(authentication.getName()));
+        model.addAttribute(
+            "enrollments",
+            enrollmentService.getStudentEnrollments(authenticatedUserService.getRequiredCurrentUserIdentifier(authentication))
+        );
         return "enrollment/my-courses";
     }
 }

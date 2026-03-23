@@ -62,6 +62,7 @@ public class StudentService {
 
         String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
         return studentRepository.findByEmailIgnoreCase(normalizedEmail)
+            .map(this::ensureStudentRole)
             .orElseGet(() -> createGoogleStudent(normalizedEmail, name));
     }
 
@@ -79,6 +80,18 @@ public class StudentService {
         student.setUsername(generateUniqueUsername(email, name));
         student.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         student.setRoles(new LinkedHashSet<>(Set.of(getRequiredRole(RoleName.STUDENT))));
+        return studentRepository.save(student);
+    }
+
+    private Student ensureStudentRole(Student student) {
+        boolean hasStudentRole = student.getRoles().stream()
+            .anyMatch(role -> role.getName() == RoleName.STUDENT);
+
+        if (hasStudentRole) {
+            return student;
+        }
+
+        student.getRoles().add(getRequiredRole(RoleName.STUDENT));
         return studentRepository.save(student);
     }
 

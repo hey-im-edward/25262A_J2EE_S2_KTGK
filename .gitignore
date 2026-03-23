@@ -2,6 +2,7 @@ HELP.md
 starter.zip
 target/
 data/
+output/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

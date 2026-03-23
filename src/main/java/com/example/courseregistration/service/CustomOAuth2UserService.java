@@ -1,6 +1,7 @@
 package com.example.courseregistration.service;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,9 +44,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         }
 
         Student student = studentService.findOrCreateGoogleStudent(email, name);
-        Set<GrantedAuthority> authorities = student.getRoles().stream()
+        Set<GrantedAuthority> authorities = new LinkedHashSet<>(oauth2User.getAuthorities());
+        authorities.addAll(student.getRoles().stream()
             .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName().name()))
-            .collect(Collectors.toSet());
+            .collect(Collectors.toSet()));
 
         Map<String, Object> attributes = new LinkedHashMap<>(oauth2User.getAttributes());
         attributes.put("localUsername", student.getUsername());

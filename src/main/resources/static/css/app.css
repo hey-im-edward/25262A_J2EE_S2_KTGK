@@ -81,6 +81,15 @@ img {
 .site-footer,
 .auth-shell {
     position: relative;
+}
+
+.site-header {
+    z-index: 5;
+}
+
+.content,
+.site-footer,
+.auth-shell {
     z-index: 1;
 }
 
@@ -174,6 +183,11 @@ img {
     backdrop-filter: blur(12px);
 }
 
+.search-shell {
+    position: relative;
+    width: 100%;
+}
+
 .search-form input,
 .course-form input,
 .course-form select {
@@ -205,6 +219,42 @@ img {
 .search-form button:hover,
 .btn:hover {
     transform: translateY(-1px);
+}
+
+.search-suggestions {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    z-index: 12;
+    display: grid;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+}
+
+.search-suggestions[hidden] {
+    display: none;
+}
+
+.search-suggestion {
+    display: block;
+    padding: 12px 14px;
+    border-radius: 14px;
+    font-weight: 700;
+    color: var(--text);
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.search-suggestion:hover,
+.search-suggestion:focus-visible {
+    color: var(--primary-dark);
+    background: rgba(15, 118, 110, 0.1);
+    outline: none;
 }
 
 .btn {
@@ -315,6 +365,11 @@ img {
     align-self: end;
 }
 
+.admin-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 24px;
+}
+
 .stat-card {
     padding: 18px;
     border-radius: 22px;
@@ -408,6 +463,18 @@ img {
     color: var(--primary-dark);
     background: rgba(15, 118, 110, 0.12);
     font-weight: 800;
+}
+
+.count-cell {
+    width: 1%;
+}
+
+.count-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 112px;
+    white-space: nowrap;
 }
 
 .course-meta {
@@ -588,6 +655,7 @@ img {
         justify-items: start;
     }
 
+    .search-shell,
     .search-form,
     .top-actions {
         width: 100%;
@@ -616,6 +684,7 @@ img {
     }
 
     .hero-stats,
+    .admin-stats,
     .form-grid {
         grid-template-columns: 1fr;
     }

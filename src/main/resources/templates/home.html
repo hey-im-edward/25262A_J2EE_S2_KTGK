@@ -72,7 +72,7 @@
                         <div class="card-actions">
                             <p class="subtle-note" th:if="${!isAuthenticated}">Đăng nhập tài khoản STUDENT để đăng ký học phần.</p>
 
-                            <form th:if="${isStudent and !@enrollmentService.isEnrolled(currentUserName, course.id)}"
+                            <form th:if="${isStudent and !@enrollmentService.isEnrolled(currentUserIdentifier, course.id)}"
                                   th:action="@{/enroll/course/{id}(id=${course.id})}"
                                   method="post">
                                 <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -80,7 +80,7 @@
                             </form>
 
                             <button class="btn btn-muted" type="button"
-                                    th:if="${isStudent and @enrollmentService.isEnrolled(currentUserName, course.id)}"
+                                    th:if="${isStudent and @enrollmentService.isEnrolled(currentUserIdentifier, course.id)}"
                                     disabled>
                                 Đã đăng ký
                             </button>

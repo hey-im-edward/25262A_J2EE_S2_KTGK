@@ -31,6 +31,17 @@
                 <div class="alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
             </section>
 
+            <div class="hero-stats admin-stats">
+                <div class="stat-card">
+                    <strong th:text="${#lists.size(courses)}">0</strong>
+                    <span>Tổng học phần</span>
+                </div>
+                <div class="stat-card">
+                    <strong th:text="${registeredStudentCount}">0</strong>
+                    <span>Sinh viên đã đăng ký môn</span>
+                </div>
+            </div>
+
             <div class="table-wrap">
                 <table class="data-table">
                     <thead>
@@ -40,6 +51,7 @@
                         <th>Danh mục</th>
                         <th>Tín chỉ</th>
                         <th>Giảng viên</th>
+                        <th>Đã đăng ký</th>
                         <th>Thao tác</th>
                     </tr>
                     </thead>
@@ -55,6 +67,10 @@
                         <td th:text="${course.category.name}">Danh mục</td>
                         <td th:text="${course.credits}">3</td>
                         <td th:text="${course.lecturer}">GV</td>
+                        <td class="count-cell">
+                            <span class="category-chip count-chip"
+                                  th:text="${courseEnrollmentCounts[course.id] ?: 0} + ' sinh viên'">0 sinh viên</span>
+                        </td>
                         <td>
                             <div class="table-actions">
                                 <a class="btn btn-ghost" th:href="@{/admin/courses/edit/{id}(id=${course.id})}">Update</a>

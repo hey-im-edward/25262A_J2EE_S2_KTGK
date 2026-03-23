@@ -18,10 +18,19 @@
             <a th:if="${isAdmin}" th:href="@{/admin/categories}">Quản lý danh mục</a>
         </nav>
 
-        <form class="search-form" th:action="@{/courses}" method="get">
-            <input type="text" name="keyword" th:value="${searchKeyword}" placeholder="Tìm kiếm theo tên học phần">
-            <button type="submit">Search</button>
-        </form>
+        <div class="search-shell">
+            <form class="search-form" th:action="@{/courses}" method="get" autocomplete="off">
+                <input type="text"
+                       id="course-search-input"
+                       name="keyword"
+                       th:value="${searchKeyword}"
+                       th:attr="data-suggest-url=@{/courses/suggestions}"
+                       placeholder="Tìm kiếm theo tên học phần"
+                       autocomplete="off">
+                <button type="submit">Search</button>
+            </form>
+            <div class="search-suggestions" id="course-search-suggestions" hidden></div>
+        </div>
 
         <div class="top-actions">
             <span class="user-pill" th:if="${isAuthenticated}" th:text="${currentUserName}">user</span>
