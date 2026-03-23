@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="page-shell">
+    <div class="page-orb orb-one"></div>
+    <div class="page-orb orb-two"></div>
+
+    <div th:replace="~{fragments/header :: siteHeader('')}"></div>
+
+    <main class="content">
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">STUDENT</p>
+                    <h1>My Courses</h1>
+                </div>
+                <a class="btn btn-primary" th:href="@{/home}">Đăng ký thêm học phần</a>
+            </div>
+
+            <div class="course-grid" th:if="${!#lists.isEmpty(enrollments)}">
+                <article class="course-card" th:each="enrollment : ${enrollments}">
+                    <img class="course-image" th:src="${enrollment.course.image}" th:alt="${enrollment.course.name}">
+                    <div class="course-content">
+                        <span class="category-chip" th:text="${enrollment.course.category.name}">Category</span>
+                        <h3 th:text="${enrollment.course.name}">Course Name</h3>
+                        <div class="course-meta">
+                            <span><strong>Tín chỉ:</strong> <span th:text="${enrollment.course.credits}"></span></span>
+                            <span><strong>Giảng viên:</strong> <span th:text="${enrollment.course.lecturer}"></span></span>
+                            <span>
+                                <strong>Ngày đăng ký:</strong>
+                                <span th:text="${T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy HH:mm').format(enrollment.enrollDate)}"></span>
+                            </span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="empty-state" th:if="${#lists.isEmpty(enrollments)}">
+                <h3>Bạn chưa đăng ký học phần nào</h3>
+                <p>Hãy quay lại trang chủ và chọn nút Enroll ở học phần bạn muốn học.</p>
+                <a class="btn btn-primary" th:href="@{/home}">Quay lại trang chủ</a>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+</div>
+</body>
+</html>

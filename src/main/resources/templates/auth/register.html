@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký tài khoản</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="auth-shell">
+    <div class="auth-panel intro-panel">
+        <p class="eyebrow">Student Registration</p>
+        <h1>Tạo tài khoản sinh viên mới.</h1>
+        <p>
+            Sau khi đăng ký thành công, tài khoản sẽ được lưu vào bảng student
+            với quyền mặc định là `STUDENT`.
+        </p>
+    </div>
+
+    <div class="auth-panel form-panel">
+        <form class="course-form" th:action="@{/register}" th:object="${studentRequest}" method="post">
+            <div class="alert-stack" th:if="${#fields.hasGlobalErrors()}">
+                <div class="alert error" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div>
+            </div>
+
+            <label>
+                <span>Username</span>
+                <input type="text" th:field="*{username}" placeholder="Nhập username">
+                <small class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></small>
+            </label>
+
+            <label>
+                <span>Password</span>
+                <input type="password" th:field="*{password}" placeholder="Nhập password">
+                <small class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+            </label>
+
+            <label>
+                <span>Email</span>
+                <input type="email" th:field="*{email}" placeholder="Nhập email">
+                <small class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+            </label>
+
+            <button class="btn btn-primary btn-full" type="submit">Đăng ký</button>
+            <p class="auth-link">Đã có tài khoản? <a th:href="@{/login}">Đăng nhập</a></p>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="auth-shell">
+    <div class="auth-panel intro-panel">
+        <p class="eyebrow">Spring Security</p>
+        <h1>Đăng nhập vào hệ thống đăng ký học phần.</h1>
+        <p>
+            Đăng nhập bằng `username/password` hoặc dùng Google OAuth2.
+            Sau khi xác thực thành công, hệ thống sẽ chuyển thẳng về `/home`.
+        </p>
+
+        <div class="demo-box">
+            <h3>Tài khoản demo</h3>
+            <p><strong>ADMIN:</strong> `admin / admin123`</p>
+            <p><strong>STUDENT:</strong> `student / student123`</p>
+        </div>
+    </div>
+
+    <div class="auth-panel form-panel">
+        <div class="alert-stack">
+            <div class="alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert error" th:if="${param.error}">Username hoặc password không đúng.</div>
+            <div class="alert success" th:if="${param.logout}">Bạn đã đăng xuất thành công.</div>
+        </div>
+
+        <form class="course-form" th:action="@{/login}" method="post">
+            <label>
+                <span>Username</span>
+                <input type="text" name="username" placeholder="Nhập username">
+            </label>
+
+            <label>
+                <span>Password</span>
+                <input type="password" name="password" placeholder="Nhập password">
+            </label>
+
+            <button class="btn btn-primary btn-full" type="submit">Login</button>
+        </form>
+
+        <div class="oauth-box">
+            <a class="btn btn-google btn-full" th:href="@{/oauth2/authorization/google}">Login with Google</a>
+            <p class="subtle-note" th:if="${!googleLoginReady}">
+                Để đăng nhập Google thực tế, đặt biến môi trường `GOOGLE_CLIENT_ID` và `GOOGLE_CLIENT_SECRET`.
+            </p>
+        </div>
+
+        <p class="auth-link">Chưa có tài khoản? <a th:href="@{/register}">Đăng ký sinh viên</a></p>
+    </div>
+</div>
+</body>
+</html>

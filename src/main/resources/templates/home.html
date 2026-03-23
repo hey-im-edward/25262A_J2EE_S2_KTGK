@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Course Registration</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="page-shell">
+    <div class="page-orb orb-one"></div>
+    <div class="page-orb orb-two"></div>
+
+    <div th:replace="~{fragments/header :: siteHeader(${keyword})}"></div>
+
+    <main class="content">
+        <section class="hero-panel">
+            <div>
+                <p class="eyebrow">Course Registration Application</p>
+                <h1>Đăng ký học phần nhanh, rõ ràng và phù hợp cho bài kiểm tra Spring Boot.</h1>
+                <p class="hero-copy">
+                    Danh sách học phần hiển thị đầy đủ tên môn, số tín chỉ, giảng viên, hình ảnh minh họa,
+                    đồng thời hỗ trợ tìm kiếm theo tên và phân trang 5 học phần mỗi trang.
+                </p>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <strong th:text="${coursePage.totalElements}">0</strong>
+                    <span>Tổng học phần</span>
+                </div>
+                <div class="stat-card">
+                    <strong>5</strong>
+                    <span>Học phần / trang</span>
+                </div>
+                <div class="stat-card">
+                    <strong th:text="${coursePage.totalPages > 0 ? coursePage.number + 1 : 1}">1</strong>
+                    <span>Trang hiện tại</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="alert-stack">
+            <div class="alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+            <div class="alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+            <div class="alert error" th:if="${param.error}">Username hoặc password không đúng.</div>
+            <div class="alert success" th:if="${param.logout}">Bạn đã đăng xuất thành công.</div>
+            <div class="alert error" th:if="${param.denied}">Bạn không có quyền truy cập chức năng này.</div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">Danh sách học phần</p>
+                    <h2>Khám phá các học phần đang mở</h2>
+                </div>
+                <p class="section-copy" th:if="${keyword != null and #strings.length(#strings.trim(keyword)) > 0}">
+                    Kết quả tìm kiếm cho từ khóa: <strong th:text="${keyword}"></strong>
+                </p>
+            </div>
+
+            <div class="course-grid" th:if="${coursePage.hasContent()}">
+                <article class="course-card" th:each="course : ${coursePage.content}">
+                    <img class="course-image" th:src="${course.image}" th:alt="${course.name}">
+                    <div class="course-content">
+                        <span class="category-chip" th:text="${course.category.name}">Category</span>
+                        <h3 th:text="${course.name}">Tên học phần</h3>
+                        <div class="course-meta">
+                            <span><strong>Tín chỉ:</strong> <span th:text="${course.credits}"></span></span>
+                            <span><strong>Giảng viên:</strong> <span th:text="${course.lecturer}"></span></span>
+                        </div>
+
+                        <div class="card-actions">
+                            <p class="subtle-note" th:if="${!isAuthenticated}">Đăng nhập tài khoản STUDENT để đăng ký học phần.</p>
+
+                            <form th:if="${isStudent and !@enrollmentService.isEnrolled(currentUserName, course.id)}"
+                                  th:action="@{/enroll/course/{id}(id=${course.id})}"
+                                  method="post">
+                                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button class="btn btn-primary" type="submit">Enroll</button>
+                            </form>
+
+                            <button class="btn btn-muted" type="button"
+                                    th:if="${isStudent and @enrollmentService.isEnrolled(currentUserName, course.id)}"
+                                    disabled>
+                                Đã đăng ký
+                            </button>
+
+                            <a class="btn btn-ghost" th:if="${isAdmin}" th:href="@{/admin/courses/edit/{id}(id=${course.id})}">
+                                Chỉnh sửa
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <div class="empty-state" th:if="${!coursePage.hasContent()}">
+                <h3>Không tìm thấy học phần phù hợp</h3>
+                <p>Thử tìm với từ khóa khác hoặc quay lại danh sách đầy đủ.</p>
+                <a class="btn btn-primary" th:href="@{/courses}">Xem tất cả học phần</a>
+            </div>
+
+            <div class="pagination" th:if="${coursePage.totalPages > 1}">
+                <a class="page-link"
+                   th:classappend="${coursePage.first} ? 'disabled'"
+                   th:href="${coursePage.first} ? '#' : @{/courses(page=${coursePage.number - 1}, keyword=${keyword})}">
+                    Trang trước
+                </a>
+
+                <a class="page-link"
+                   th:each="pageNumber : ${#numbers.sequence(0, coursePage.totalPages - 1)}"
+                   th:classappend="${pageNumber == coursePage.number} ? 'active'"
+                   th:href="@{/courses(page=${pageNumber}, keyword=${keyword})}"
+                   th:text="${pageNumber + 1}">
+                    1
+                </a>
+
+                <a class="page-link"
+                   th:classappend="${coursePage.last} ? 'disabled'"
+                   th:href="${coursePage.last} ? '#' : @{/courses(page=${coursePage.number + 1}, keyword=${keyword})}">
+                    Trang sau
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${editing} ? 'Cập nhật danh mục' : 'Thêm danh mục'">Category Form</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="page-shell">
+    <div class="page-orb orb-one"></div>
+    <div class="page-orb orb-two"></div>
+
+    <div th:replace="~{fragments/header :: siteHeader('')}"></div>
+
+    <main class="content">
+        <section class="form-card">
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">ADMIN</p>
+                    <h1 th:text="${editing} ? 'Cập nhật danh mục' : 'Create Category'">Create Category</h1>
+                </div>
+                <a class="btn btn-ghost" th:href="@{/admin/categories}">Quay lại</a>
+            </div>
+
+            <form class="course-form"
+                  th:if="${editing}"
+                  th:object="${categoryForm}"
+                  th:action="@{/admin/categories/edit/{id}(id=${categoryId})}"
+                  method="post">
+                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="alert-stack" th:if="${#fields.hasGlobalErrors()}">
+                    <div class="alert error" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div>
+                </div>
+
+                <label>
+                    <span>Tên danh mục</span>
+                    <input type="text" th:field="*{name}" placeholder="Ví dụ: Công nghệ phần mềm">
+                    <small class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                </label>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Update Category</button>
+                    <a class="btn btn-ghost" th:href="@{/admin/categories}">Hủy</a>
+                </div>
+            </form>
+
+            <form class="course-form"
+                  th:if="${!editing}"
+                  th:object="${categoryForm}"
+                  th:action="@{/admin/categories/create}"
+                  method="post">
+                <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="alert-stack" th:if="${#fields.hasGlobalErrors()}">
+                    <div class="alert error" th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div>
+                </div>
+
+                <label>
+                    <span>Tên danh mục</span>
+                    <input type="text" th:field="*{name}" placeholder="Ví dụ: Công nghệ phần mềm">
+                    <small class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                </label>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Create Category</button>
+                    <a class="btn btn-ghost" th:href="@{/admin/categories}">Hủy</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý danh mục</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<div class="page-shell">
+    <div class="page-orb orb-one"></div>
+    <div class="page-orb orb-two"></div>
+
+    <div th:replace="~{fragments/header :: siteHeader('')}"></div>
+
+    <main class="content">
+        <section class="section-card">
+            <div class="section-head">
+                <div>
+                    <p class="eyebrow">ADMIN</p>
+                    <h1>Quản lý danh mục</h1>
+                </div>
+                <div class="table-actions">
+                    <a class="btn btn-ghost" th:href="@{/admin/courses}">Quản lý học phần</a>
+                    <a class="btn btn-primary" th:href="@{/admin/categories/create}">+ Create Category</a>
+                </div>
+            </div>
+
+            <section class="alert-stack">
+                <div class="alert success" th:if="${successMessage}" th:text="${successMessage}"></div>
+                <div class="alert error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+            </section>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên danh mục</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="category : ${categories}">
+                        <td th:text="${category.id}">1</td>
+                        <td th:text="${category.name}">Công nghệ phần mềm</td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="btn btn-ghost" th:href="@{/admin/categories/edit/{id}(id=${category.id})}">Update</a>
+                                <form th:action="@{/admin/categories/delete/{id}(id=${category.id})}" method="post">
+                                    <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button class="btn btn-danger" type="submit" onclick="return confirm('Bạn chắc chắn muốn xóa danh mục này?')">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div th:replace="~{fragments/footer :: siteFooter}"></div>
+</div>
+</body>
+</html>

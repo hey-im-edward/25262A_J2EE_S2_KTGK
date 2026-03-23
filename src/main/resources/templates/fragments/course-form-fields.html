@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="fields">
+    <div class="form-grid">
+        <label>
+            <span>Tên học phần</span>
+            <input type="text" th:field="*{name}" placeholder="Ví dụ: Lập trình Java nâng cao">
+            <small class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+        </label>
+
+        <label>
+            <span>Số tín chỉ</span>
+            <input type="number" th:field="*{credits}" min="1" max="10">
+            <small class="field-error" th:if="${#fields.hasErrors('credits')}" th:errors="*{credits}"></small>
+        </label>
+
+        <label>
+            <span>Giảng viên</span>
+            <input type="text" th:field="*{lecturer}" placeholder="Ví dụ: ThS. Nguyễn Văn A">
+            <small class="field-error" th:if="${#fields.hasErrors('lecturer')}" th:errors="*{lecturer}"></small>
+        </label>
+
+        <label>
+            <span>Danh mục</span>
+            <select th:field="*{categoryId}">
+                <option value="">-- Chọn danh mục --</option>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}">
+                </option>
+            </select>
+            <small class="field-error" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></small>
+        </label>
+    </div>
+
+    <label>
+        <span>Đường dẫn hình ảnh</span>
+        <input type="text" th:field="*{image}" placeholder="/images/course-java.svg">
+        <small class="helper-text">Có thể dùng các ảnh mẫu: `/images/course-java.svg`, `/images/course-spring.svg`, `/images/course-ai.svg`...</small>
+        <small class="helper-text">Nếu cần thêm hoặc sửa danh mục, vào mục `Quản lý danh mục` trong menu ADMIN.</small>
+        <small class="field-error" th:if="${#fields.hasErrors('image')}" th:errors="*{image}"></small>
+    </label>
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit" th:text="${editing} ? 'Update Course' : 'Create Course'">Save</button>
+        <a class="btn btn-ghost" th:href="@{/admin/courses}">Hủy</a>
+    </div>
+</th:block>
+</body>
+</html>
